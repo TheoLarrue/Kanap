@@ -1,6 +1,6 @@
 // Card Builder
 
-var cardBuilder = function(product) {
+let cardBuilder = function(product) {
 
     //Creation de la balise <img> et ses attributs
     const img = document.createElement('img');
@@ -36,8 +36,8 @@ var cardBuilder = function(product) {
 
 // GetApi
 
-var getApi = function() {
-    url = "http://localhost:3000/api/products";
+let getApi = function() {
+    let url = "http://localhost:3000/api/products";
     fetch(url).then(res => {
         if (res.ok) {
             return res.json();
@@ -45,7 +45,7 @@ var getApi = function() {
             console.log('error');
         }
     }).then(data => {
-        var products = data;
+        let products = data;
         console.log(products)
         for (let i = 0; i < products.length; i++) {
             let product = products[i];
