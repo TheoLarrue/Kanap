@@ -25,7 +25,7 @@ let cardBuilder = function(product) {
     // Creation de la balise <a>
     const link = document.createElement('a');
     link.append(article);
-    link.href = '/product.html?id=' + product._id;
+    link.href = 'product.html?id=' + product._id;
 
 
     // Injection du contenu dans la <div> .items
@@ -34,16 +34,21 @@ let cardBuilder = function(product) {
 
 }
 
+//Page d'erreur
+
+let errorFunc = function() {
+    let items = document.querySelector(".items")
+    const h3Error = document.createElement('h3')
+    h3Error.innerHTML = ("Une erreur est survenu")
+    items.appendChild(h3Error);
+}
+
 // GetApi
 
 let getApi = function() {
     let url = "http://localhost:3000/api/products";
     fetch(url).then(res => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            console.log('error');
-        }
+        return res.json();
     }).then(data => {
         let products = data;
         console.log(products)
@@ -51,6 +56,8 @@ let getApi = function() {
             let product = products[i];
             cardBuilder(product);
         }
+    }).catch(function(error) {
+        errorFunc();
     })
 }
 
