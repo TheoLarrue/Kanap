@@ -72,8 +72,30 @@ let getApiProduct = function() {
 }
 
 
-
-
-
-
 getApiProduct();
+
+
+// Ajout data au localStorage
+
+let addToCart = function() {
+    let selectColor = document.querySelector('#colors');
+    let valueColor = selectColor.value;
+    let selectQuantity = document.querySelector('#quantity');
+    valueQuantity = selectQuantity.value;
+
+    if (valueColor !== "") {
+        localStorage.setItem("color", colors.value);
+    } else {
+        alert('Merci de choisir une couleur');
+    }
+
+    if (valueQuantity >= 1 && valueQuantity <= 100) {
+        localStorage.setItem("quantity", quantity.value);
+    } else {
+        alert('Merci de choisir une quantité');
+    }
+
+}
+
+let btn = document.querySelector('#addToCart');
+btn.addEventListener('click', addToCart);
