@@ -42,6 +42,19 @@ let productBuilder = function(product) {
 
 }
 
+// Erreur Produit
+
+let errorFuncProduct = function() {
+
+    let item = document.querySelector('.item__content');
+    item.innerHTML = "";
+    let h3 = document.createElement('h3');
+    item.append(h3);
+    h3.innerHTML = "Un erreur est survenue";
+    h3.style.textAlign = "center";
+
+}
+
 // GetApi Produit
 
 let getApiProduct = function() {
