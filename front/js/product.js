@@ -83,16 +83,18 @@ let addToCart = function() {
     let selectQuantity = document.querySelector('#quantity');
     valueQuantity = selectQuantity.value;
 
-    if (valueColor !== "") {
-        localStorage.setItem("color", colors.value);
-    } else {
-        alert('Merci de choisir une couleur');
-    }
 
-    if (valueQuantity >= 1 && valueQuantity <= 100) {
-        localStorage.setItem("quantity", quantity.value);
+    if (valueColor == "") {
+        alert("Merci de choisir une couleur");
+    } else if (valueQuantity < 1 || valueQuantity >= 100) {
+        alert("Merci de choisir une quantité");
     } else {
-        alert('Merci de choisir une quantité');
+        let productOrdered = {
+            color: valueColor,
+            quantity: valueQuantity,
+            id: idProduct
+        }
+        localStorage.setItem('item', JSON.stringify(productOrdered));
     }
 
 }
