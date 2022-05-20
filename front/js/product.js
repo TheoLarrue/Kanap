@@ -3,12 +3,10 @@
 let src = window.location.href;
 let url = new URL(src);
 let idProduct = url.searchParams.get("id");
-console.log(idProduct);
-
 
 // Constructeur de page
 
-let productBuilder = function(product) {
+function productBuilder(product) {
 
     // Image du produit
     const img = document.createElement('img');
@@ -44,7 +42,7 @@ let productBuilder = function(product) {
 
 // Erreur Produit
 
-let errorFuncProduct = function() {
+function errorFuncProduct() {
 
     let item = document.querySelector('.item__content');
     item.innerHTML = "";
@@ -57,15 +55,13 @@ let errorFuncProduct = function() {
 
 // GetApi Produit
 
-let getApiProduct = function() {
+function getApiProduct() {
     let apiUrl = "http://localhost:3000/api/products/" + idProduct;
-    console.log(apiUrl);
     fetch(apiUrl).then(res => {
         return res.json();
     }).then(data => {
-        let product = data;
-        console.log(product);
-        productBuilder(product);
+        let productData = data;
+        productBuilder(productData);
     }).catch(function(error) {
         errorFuncProduct();
     })
@@ -76,12 +72,14 @@ getApiProduct();
 
 
 // Sauvegarde du panier
-let saveCart = function(items) {
+
+function saveCart(items) {
     localStorage.setItem('items', JSON.stringify(items));
 }
 
 // Accès au panier
-let getCart = function() {
+
+function getCart() {
     let cart = localStorage.getItem("items");
     if (cart == null) {
         return [];
@@ -90,15 +88,11 @@ let getCart = function() {
     }
 }
 
-// Ajout au panier
-let addToCart = function(product) {
-    let cart = getCart();
-    cart.push(product);
-    saveCart(cart);
-}
 
-// Fonction du Bouton d'ajout au panier
-let addToCartButton = function() {
+// Ajout au panier
+
+function addToCart(product) {
+
     let selectColor = document.querySelector('#colors');
     let valueColor = selectColor.value;
     let selectQuantity = document.querySelector('#quantity');
@@ -113,9 +107,22 @@ let addToCartButton = function() {
             quantity: valueQuantity,
             color: valueColor
         }
-        addToCart(product);
+
+        let cart = getCart();
+        let productCheck = cart.find(p => p.id == product.id && p.color == product.color)
+        if (productCheck !== undefined) {
+            productCheck.quantity = parseInt(productCheck.quantity) + parseInt(valueQuantity);
+        } else {
+            cart.push(product);
+        }
+        if (window.confirm(`Voulez vous ajouter ${valueQuantity}  à votre panier ?`)) {
+            saveCart(cart);
+        }
+
     }
 }
 
+// Event du bouton
+
 let btn = document.querySelector('#addToCart');
-btn.addEventListener('click', addToCartButton);
+btn.addEventListener('click', addToCart);
