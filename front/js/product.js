@@ -115,7 +115,7 @@ function addToCart(product) {
         } else {
             cart.push(product);
         }
-        if (window.confirm(`Voulez vous ajouter ${valueQuantity}  à votre panier ?`)) {
+        if (window.confirm(`Voulez vous ajouter ${valueQuantity}  produits à votre panier ?`)) {
             saveCart(cart);
         }
 

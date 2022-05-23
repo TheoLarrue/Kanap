@@ -37,9 +37,14 @@ let cardBuilder = function(product) {
 //Page d'erreur
 
 let errorFunc = function() {
+    let titles = document.querySelector('.titles');
+    let h2 = titles.querySelector('h2');
+    let h1 = titles.querySelector('h1');
+    h1.textContent = "";
+    h2.textContent = "";
     let items = document.querySelector(".items");
     const h3Error = document.createElement('h3');
-    h3Error.innerHTML = ("Une erreur est survenu");
+    h3Error.innerHTML = ("Une erreur est survenue");
     items.appendChild(h3Error);
 }
 
