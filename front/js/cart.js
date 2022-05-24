@@ -1,4 +1,6 @@
-// Accès au panier
+let productData = [];
+
+// Fonction : Accès au panier
 
 function getCart() {
     let cart = localStorage.getItem("items");
@@ -9,13 +11,40 @@ function getCart() {
     }
 }
 
-let productData = []
 
-// Cart Builder
+async function testBuilder(item) {
+    let cartItems = document.querySelector('#cart__items');
+    let content = `<article class="cart__item" data-id="{${item.id}}" data-color="{${item.color}}">
+                <div class="cart__item__img">
+                  <img src="${item.imageUrl}" alt="${item.altTxt}">
+                </div>
+                <div class="cart__item__content">
+                  <div class="cart__item__content__description">
+                    <h2>${item.name}</h2>
+                    <p>${item.color}</p>
+                    <p>${item.price} €</p>
+                  </div>
+                  <div class="cart__item__content__settings">
+                    <div class="cart__item__content__settings__quantity">
+                      <p>Qté : ${item.quantity}</p>
+                     
+                    </div>
+                    <div class="cart__item__content__settings__delete">
+                      <p class="deleteItem">Supprimer</p>
+                    </div>
+                  </div>
+                </div>
+              </article>`
 
-function cartBuilder(item) {
+    cartItems.insertAdjacentHTML("beforeend", content);
+}
 
-    let cartItems = document.querySelector('.cart__items');
+
+// Fonction : Cart Builder
+
+async function cartBuilder(item) {
+
+    let cartItems = document.querySelector('#cart__items');
 
     const article = document.createElement('article');
     article.className = "cart__item";
@@ -26,8 +55,8 @@ function cartBuilder(item) {
     div1.append(article);
 
     const img = document.createElement('img');
-    img.src = item.imageUrl;
     img.alt = item.altTxt;
+    img.src = item.imageUrl;
     img.append(div1);
 
     const div2 = document.createElement('div');
@@ -81,9 +110,19 @@ function cartBuilder(item) {
     pDelete.append(div6)
 }
 
-let items = getCart();
-console.log(items);
+// Fonction : Creation d'un nouveau tableau produit avec le local storage et data de l'API
 
+function combo(item1, item2) {
+    let newItem = Object.assign(item1, item2);
+    productData.push(newItem);
+}
+
+
+// Récupère les données du panier dans un variable
+
+let items = getCart();
+
+// Boucle analyse Local Storage et récupère les données de l'API
 
 for (let i = 0; i < items.length; i++) {
     let item = items[i];
@@ -91,15 +130,23 @@ for (let i = 0; i < items.length; i++) {
     fetch(apiUrl).then(res => {
         return res.json();
     }).then(data => {
-        productData.push(data);
-        console.log(productData)
-        let newItem = productData.map(el => ({ name: el.name, price: el.price }));
-        console.log(newItem);
-
-
-
+        let dataApi = data;
+        let dataNP = {
+            name: dataApi.name,
+            price: dataApi.price,
+            imageUrl: dataApi.imageUrl,
+            altTxt: dataApi.altTxt,
+            description: dataApi.description
+        };
+        combo(dataNP, item);
+        for (let i = 0; i < productData.length; i++) {
+            let item = productData[i];
+            testBuilder(item);
+        }
 
     }).catch(function(error) {
         console.log('error');
     })
 }
+
+console.log(productData);
