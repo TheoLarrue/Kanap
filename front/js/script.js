@@ -1,6 +1,6 @@
 // Card Builder
 
-let cardBuilder = function(product) {
+function cardBuilder(product) {
 
     //Creation de la balise <img> et ses attributs
     const img = document.createElement('img');
@@ -36,7 +36,8 @@ let cardBuilder = function(product) {
 
 //Page d'erreur
 
-let errorFunc = function() {
+function errorFunc() {
+
     let titles = document.querySelector('.titles');
     let h2 = titles.querySelector('h2');
     let h1 = titles.querySelector('h1');
@@ -46,17 +47,18 @@ let errorFunc = function() {
     const h3Error = document.createElement('h3');
     h3Error.innerHTML = ("Une erreur est survenue");
     items.appendChild(h3Error);
+
 }
 
 // GetApi
 
-let getApi = function() {
+function getApi() {
+
     let url = "http://localhost:3000/api/products";
     fetch(url).then(res => {
         return res.json();
     }).then(data => {
         let products = data;
-        console.log(products)
         for (let i = 0; i < products.length; i++) {
             let product = products[i];
             cardBuilder(product);
@@ -64,6 +66,7 @@ let getApi = function() {
     }).catch(function(error) {
         errorFunc();
     })
+
 }
 
 getApi();
