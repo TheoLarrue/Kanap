@@ -9,6 +9,12 @@ function getCart() {
     }
 }
 
+// Sauvegarde du panier
+
+function saveCart(items) {
+    localStorage.setItem('items', JSON.stringify(items));
+}
+
 // Récupère les données du panier dans un variable
 
 let items = getCart();
@@ -29,8 +35,8 @@ function cartBuilder(item) {
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
-                      <p>Qté : ${item.quantity}</p>
-                     
+                      <p>Qté : </p>
+                     <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${item.quantity}">
                     </div>
                     <div class="cart__item__content__settings__delete">
                       <p class="deleteItem">Supprimer</p>
@@ -67,6 +73,37 @@ async function getAndBuild(item) {
 
 // Fonction getAndBuild pour chaque objets du Local Storage
 
-for (item of items) {
-    getAndBuild(item);
+
+
+// test Remove
+
+async function quanti() {
+
+    for (item of items) {
+        await getAndBuild(item);
+    }
+
+    let articles = document.querySelectorAll('article');
+    let cart = getCart();
+
+    for (article of articles) {
+        let input = article.querySelector('input');
+        let color = article.dataset.color;
+        let id = article.dataset.id;
+        let inputValue = input.value;
+
+
+        input.addEventListener('change', () => {
+
+            let productCheck = cart.find(p => p.id == id && p.color == color)
+            console.log(productCheck);
+            if (productCheck !== undefined) {
+                productCheck.quantity = parseInt(inputValue);
+            }
+            saveCart(cart);
+        })
+    }
+
 }
+
+quanti();
