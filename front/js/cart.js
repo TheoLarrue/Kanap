@@ -84,18 +84,19 @@ async function quanti() {
     }
 
     let articles = document.querySelectorAll('article');
-    let cart = getCart();
+
 
     for (article of articles) {
         let input = article.querySelector('input');
         let color = article.dataset.color;
         let id = article.dataset.id;
         let inputValue = input.value;
-
+        let cart = getCart();
+        console.log(cart);
 
         input.addEventListener('change', () => {
 
-            let productCheck = cart.find(p => p.id == id && p.color == color)
+            let productCheck = cart.find(c => c.id == id && c.color == color)
             console.log(productCheck);
             if (productCheck !== undefined) {
                 productCheck.quantity = parseInt(inputValue);
