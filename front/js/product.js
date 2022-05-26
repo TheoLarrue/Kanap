@@ -55,16 +55,21 @@ function errorFuncProduct() {
 
 // GetApi Produit
 
-function getApiProduct() {
-    let apiUrl = "http://localhost:3000/api/products/" + idProduct;
-    fetch(apiUrl).then(res => {
-        return res.json();
-    }).then(data => {
-        let productData = data;
+async function getApiProduct() {
+
+    try {
+
+        let apiUrl = "http://localhost:3000/api/products/" + idProduct;
+        let response = await fetch(apiUrl);
+        let productData = await response.json();
+
         productBuilder(productData);
-    }).catch(function(error) {
+
+    } catch (error) {
+
         errorFuncProduct();
-    })
+
+    }
 }
 
 
@@ -97,10 +102,14 @@ function addToCart(product) {
     let valueColor = selectColor.value;
     let selectQuantity = document.querySelector('#quantity');
     let valueQuantity = selectQuantity.value;
+    let title = document.querySelector('#title').textContent;
 
 
-    if (valueColor == "" || valueQuantity < 1 || valueQuantity > 100) {
-        alert("Merci de choisir une couleur et une quantité entre 1 et 100");
+
+    if (valueColor == "") {
+        alert("Merci de choisir une couleur");
+    } else if (valueQuantity < 1 || valueQuantity > 100) {
+        alert("Merci de choisir une quantité")
     } else {
         let product = {
             id: idProduct,
@@ -109,13 +118,14 @@ function addToCart(product) {
         }
 
         let cart = getCart();
+
         let productCheck = cart.find(p => p.id == product.id && p.color == product.color)
         if (productCheck !== undefined) {
             productCheck.quantity = parseInt(productCheck.quantity) + parseInt(valueQuantity);
         } else {
             cart.push(product);
         }
-        if (window.confirm(`Voulez vous ajouter ${valueQuantity}  produits à votre panier ?`)) {
+        if (window.confirm(`Voulez vous ajouter ${valueQuantity} ${title} à votre panier ?`)) {
             saveCart(cart);
         }
 

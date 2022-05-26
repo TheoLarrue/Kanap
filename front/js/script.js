@@ -52,20 +52,21 @@ function errorFunc() {
 
 // GetApi
 
-function getApi() {
+async function getApi() {
 
-    let url = "http://localhost:3000/api/products";
-    fetch(url).then(res => {
-        return res.json();
-    }).then(data => {
-        let products = data;
-        for (let i = 0; i < products.length; i++) {
-            let product = products[i];
+    try {
+
+        let url = "http://localhost:3000/api/products";
+        let reponse = await fetch(url);
+        let products = await reponse.json();
+
+        for (product of products) {
             cardBuilder(product);
         }
-    }).catch(function(error) {
+
+    } catch (error) {
         errorFunc();
-    })
+    }
 
 }
 
