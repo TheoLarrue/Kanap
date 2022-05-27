@@ -17,13 +17,13 @@ function saveCart(items) {
 
 // Récupère les données du panier dans un variable
 
-let items = getCart();
+let cart = getCart();
 
 // Fonction Cart Builder
 
 function cartBuilder(item) {
     let cartItems = document.querySelector('#cart__items');
-    let content = `<article class="cart__item" data-id="{${item.id}}" data-color="{${item.color}}">
+    let content = `<article class="cart__item" data-id="${item.id}" data-color="${item.color}">
                 <div class="cart__item__img">
                   <img src="${item.imageUrl}" alt="${item.altTxt}">
                 </div>
@@ -71,40 +71,67 @@ async function getAndBuild(item) {
     cartBuilder(newItem);
 }
 
-// Fonction getAndBuild pour chaque objets du Local Storage
+// Function Supprimer un article
 
-
-
-// test Remove
-
-async function quanti() {
-
-    for (item of items) {
-        await getAndBuild(item);
-    }
+function remove(item) {
 
     let articles = document.querySelectorAll('article');
 
+    for (article of articles) {
+        let deleteItem = article.querySelector('.deleteItem');
+        let color = article.dataset.color
+        let id = article.dataset.id;
+
+
+
+        deleteItem.addEventListener('click', () => {
+
+            let check = cart.find(p => p.id == id && p.color == color)
+            if (check !== undefined) {
+                if (window.confirm(`Voulez vous supprimer ${check.quantity} ${check.name} de votre panier ?`)) {
+                    cart = cart.filter(p => p.id !== check.id && p.color !== check.color);
+                    saveCart(cart);
+                    location.reload();
+
+                }
+            }
+        })
+    }
+}
+
+// Fonction Changer une quantité
+
+function quantity() {
+
+    let articles = document.querySelectorAll('article');
 
     for (article of articles) {
         let input = article.querySelector('input');
-        let color = article.dataset.color;
-        let id = article.dataset.id;
-        let inputValue = input.value;
-        let cart = getCart();
-        console.log(cart);
+        let color = article.dataset.color
+        let id = article.dataset.id
 
         input.addEventListener('change', () => {
 
-            let productCheck = cart.find(c => c.id == id && c.color == color)
-            console.log(productCheck);
-            if (productCheck !== undefined) {
-                productCheck.quantity = parseInt(inputValue);
+            let check = cart.find(p => p.id == id && p.color == color);
+            console.log(check);
+            if (check !== undefined) {
+                check.quantity = input.value;
+                saveCart(cart);
             }
-            saveCart(cart);
         })
+    }
+}
+
+// Function Run
+
+async function run() {
+
+    for (item of cart) {
+        await getAndBuild(item);
+        await quantity();
+        await remove();
     }
 
 }
 
-quanti();
+run();
