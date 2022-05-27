@@ -1,20 +1,24 @@
 // Fonction panier vide
 
 function emptyCart() {
-    let cartItems = document.querySelector('#cart__items');
-    let h3 = document.createElement('h3');
-    cartItems.append(h3);
-    h3.innerHTML = "Le panier est vide";
-    h3.style.textAlign = "center";
 
+    if (cart.length > 0) {
+        console.log('ok');
+    } else {
+        let cartItems = document.querySelector('#cart__items');
+        let h3 = document.createElement('h3');
+        cartItems.append(h3);
+        h3.innerHTML = "Le panier est vide";
+        h3.style.textAlign = "center";
+    }
 }
 
 // Fonction : Accès au panier
 
 function getCart() {
     let cart = localStorage.getItem("items");
-    if (cart == null || cart.length > 0) {
-        emptyCart();
+    if (cart == null) {
+        return [];
     } else {
         return JSON.parse(cart);
     }
@@ -84,7 +88,7 @@ async function getAndBuild(item) {
 
 // Function Supprimer un article
 
-function remove(item) {
+function remove() {
 
     let articles = document.querySelectorAll('article');
 
@@ -99,9 +103,11 @@ function remove(item) {
 
             let check = cart.find(p => p.id == id && p.color == color)
             if (check !== undefined) {
+                console.log(check);
                 if (window.confirm(`Voulez vous supprimer ${check.quantity} ${check.name} de votre panier ?`)) {
-                    cart = cart.filter(p => p.id !== check.id && p.color !== check.color);
-                    saveCart(cart);
+
+                    let newCart = cart.filter(c => c.id !== id && c.color !== color);
+                    saveCart(newCart);
                     location.reload();
 
                 }
@@ -124,7 +130,6 @@ function quantity() {
         input.addEventListener('change', () => {
 
             let check = cart.find(p => p.id == id && p.color == color);
-            console.log(check);
             if (check !== undefined) {
                 check.quantity = input.value;
                 saveCart(cart);
@@ -137,12 +142,13 @@ function quantity() {
 
 async function run() {
 
+    emptyCart();
+
     for (item of cart) {
         await getAndBuild(item);
         await quantity();
         await remove();
     }
-
 }
 
 run();
