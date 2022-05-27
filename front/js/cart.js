@@ -1,9 +1,20 @@
+// Fonction panier vide
+
+function emptyCart() {
+    let cartItems = document.querySelector('#cart__items');
+    let h3 = document.createElement('h3');
+    cartItems.append(h3);
+    h3.innerHTML = "Le panier est vide";
+    h3.style.textAlign = "center";
+
+}
+
 // Fonction : Accès au panier
 
 function getCart() {
     let cart = localStorage.getItem("items");
-    if (cart == null) {
-        return [];
+    if (cart == null || cart.length > 0) {
+        emptyCart();
     } else {
         return JSON.parse(cart);
     }
