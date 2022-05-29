@@ -1,18 +1,3 @@
-// Fonction panier vide
-
-function emptyCart() {
-
-    if (cart.length > 0) {
-        console.log('ok');
-    } else {
-        let cartItems = document.querySelector('#cart__items');
-        let h3 = document.createElement('h3');
-        cartItems.append(h3);
-        h3.innerHTML = "Le panier est vide";
-        h3.style.textAlign = "center";
-    }
-}
-
 // Fonction : Accès au panier
 
 function getCart() {
@@ -34,19 +19,29 @@ function saveCart(items) {
 
 let cart = getCart();
 
-// Fonction Cart Builder
+// Récupère les données de l'Api pour chaque objets dans le Local Storage et lance la fonction Cart Builder
 
-function cartBuilder(item) {
+async function getAndBuild(item) {
+
+    let apiUrl = "http://localhost:3000/api/products/" + item.id;
+    let reponse = await fetch(apiUrl);
+    let data = await reponse.json();
+
+    let price = data.price;
+    let url = data.imageUrl;
+    let alt = data.altTxt;
+    let name = data.name;
+
     let cartItems = document.querySelector('#cart__items');
     let content = `<article class="cart__item" data-id="${item.id}" data-color="${item.color}">
                 <div class="cart__item__img">
-                  <img src="${item.imageUrl}" alt="${item.altTxt}">
+                  <img src="${url}" alt="${alt}">
                 </div>
                 <div class="cart__item__content">
                   <div class="cart__item__content__description">
-                    <h2>${item.name}</h2>
+                    <h2>${name}</h2>
                     <p>${item.color}</p>
-                    <p>${item.price} €</p>
+                    <p>${price} €</p>
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
@@ -64,28 +59,6 @@ function cartBuilder(item) {
 
 }
 
-// Récupère les données de l'Api pour chaque objets dans le Local Storage et lance la fonction Cart Builder
-
-async function getAndBuild(item) {
-
-    let apiUrl = "http://localhost:3000/api/products/" + item.id;
-    let reponse = await fetch(apiUrl);
-    let data = await reponse.json();
-
-
-    let dataNP = {
-        name: data.name,
-        price: data.price,
-        imageUrl: data.imageUrl,
-        altTxt: data.altTxt,
-        description: data.description
-    };
-
-    let newItem = Object.assign(item, dataNP);
-
-    cartBuilder(newItem);
-}
-
 // Function Supprimer un article
 
 function remove() {
@@ -96,6 +69,7 @@ function remove() {
         let deleteItem = article.querySelector('.deleteItem');
         let color = article.dataset.color
         let id = article.dataset.id;
+        let name = article.querySelector('h2').textContent;
 
 
 
@@ -103,14 +77,9 @@ function remove() {
 
             let check = cart.find(p => p.id == id && p.color == color)
             if (check !== undefined) {
-                console.log(check);
-                if (window.confirm(`Voulez vous supprimer ${check.quantity} ${check.name} de votre panier ?`)) {
-
-                    let newCart = cart.filter(c => c.id !== id && c.color !== color);
-                    saveCart(newCart);
-                    location.reload();
-
-                }
+                let newCart = cart.filter(c => c !== check);
+                saveCart(newCart);
+                location.reload();
             }
         })
     }
@@ -142,13 +111,22 @@ function quantity() {
 
 async function run() {
 
-    emptyCart();
+    if (cart.length > 0) {
 
-    for (item of cart) {
-        await getAndBuild(item);
-        await quantity();
-        await remove();
+        for (item of cart) {
+            await getAndBuild(item);
+            await quantity();
+            await remove();
+        }
+
+    } else {
+        let cartItems = document.querySelector('#cart__items');
+        let h3 = document.createElement('h3');
+        cartItems.append(h3);
+        h3.innerHTML = "Le panier est vide";
+        h3.style.textAlign = "center";
     }
+
 }
 
 run();
