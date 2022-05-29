@@ -1,4 +1,4 @@
-// Fonction : Accès au panier
+// Accès au panier
 
 function getCart() {
     let cart = localStorage.getItem("items");
@@ -19,7 +19,7 @@ function saveCart(items) {
 
 let cart = getCart();
 
-// Récupère les données de l'Api pour chaque objets dans le Local Storage et lance la fonction Cart Builder
+//Pour chaque objets dans le Local Storage récupère les données de l'Api et construit le Html
 
 async function getAndBuild(item) {
 
@@ -59,7 +59,7 @@ async function getAndBuild(item) {
 
 }
 
-// Function Supprimer un article
+// Supprimer un article
 
 function remove() {
 
@@ -85,7 +85,7 @@ function remove() {
     }
 }
 
-// Fonction Changer une quantité
+// Changer une quantité
 
 function quantity() {
 
@@ -102,12 +102,54 @@ function quantity() {
             if (check !== undefined) {
                 check.quantity = input.value;
                 saveCart(cart);
+                displayTotal();
             }
         })
     }
 }
 
-// Function Run
+// Affiche le total quantité et total prix du panier 
+
+async function displayTotal() {
+
+    let totalQuantity = [];
+    let totalPrice = [];
+
+    for (item of cart) {
+
+        let apiUrl = "http://localhost:3000/api/products/" + item.id;
+        let reponse = await fetch(apiUrl);
+        let data = await reponse.json();
+
+        let price = parseInt(data.price);
+        let quantity = parseInt(item.quantity);
+        let priceTotal = (price * quantity);
+
+        totalQuantity.push(quantity);
+        totalPrice.push(priceTotal);
+
+    }
+
+    let sommeQuantity = 0;
+    let sommePrice = 0
+
+    for (let i = 0; i < totalQuantity.length; i++) {
+        sommeQuantity += totalQuantity[i];
+    }
+
+    for (let i = 0; i < totalPrice.length; i++) {
+        sommePrice += totalPrice[i];
+    }
+
+    let quantityHtml = document.querySelector('#totalQuantity');
+    quantityHtml.innerHTML = sommeQuantity;
+
+    let priceHtml = document.querySelector('#totalPrice');
+    priceHtml.innerHTML = sommePrice;
+
+}
+
+// Run
 
 async function run() {
 
@@ -115,9 +157,10 @@ async function run() {
 
         for (item of cart) {
             await getAndBuild(item);
-            await quantity();
-            await remove();
         }
+        await quantity();
+        await remove();
+        await displayTotal();
 
     } else {
         let cartItems = document.querySelector('#cart__items');
