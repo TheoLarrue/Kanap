@@ -173,3 +173,31 @@ async function run() {
 }
 
 run();
+
+// Formulaire
+
+function form() {
+
+    let firstName = document.querySelector('#firstName');
+    let firstNameError = document.querySelector('#firstNameErrorMsg')
+
+    let lastName = document.querySelector('#lastName');
+    let lastNameError = document.querySelector('#lastNameErrorMsg')
+
+    let nameRegex = /^[a-zA-Z-\s]+$/;
+
+    if (nameRegex.test(firstName.value) == false) {
+        firstNameError.innerHTML = "Le prenom ne doit contenir que des lettres";
+        submit.preventdefault();
+    } else if (nameRegex.test(lastName.value) == false) {
+        firstNameError.innerHTML = "Le nom ne doit contenir que des lettres";
+        submit.preventdefault();
+    } else if (nameRegex.test(firstName.value) == true) {
+        console.log("c'est ok ")
+        submit.preventdefault();
+    }
+}
+
+
+let submit = document.querySelector('#order');
+submit.addEventListener('submit', form);
