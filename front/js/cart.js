@@ -191,6 +191,9 @@ let cityError = document.querySelector('#cityErrorMsg');
 let email = document.querySelector('#email');
 let emailError = document.querySelector('#emailErrorMsg');
 
+let adress = document.querySelector('#adress');
+let adressError = document.querySelector('#adressErrorMsg');
+
 // Fonctions des différents inputs
 
 function funcFirstName() {
@@ -261,3 +264,30 @@ order.addEventListener('click', function(e) {
         e.preventDefault();
     }
 })
+
+// Post Order
+
+function postOrder() {
+
+    let arrayId = [];
+
+    for (product of cart) {
+        arrayId.push(product.id);
+    }
+
+    let order = {
+
+        contact: {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            adress: adress.value,
+            city: city.value,
+            email: email.value
+        },
+
+        products: arrayId
+    }
+
+}
+
+postOrder();
