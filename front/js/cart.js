@@ -174,30 +174,90 @@ async function run() {
 
 run();
 
-// Formulaire
+// Inputs et Regex
 
-function form() {
+let simpleRegex = /^[a-zA-Z-\s ]*$/;
+let mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,3}))$/;
 
-    let firstName = document.querySelector('#firstName');
-    let firstNameError = document.querySelector('#firstNameErrorMsg')
+let firstName = document.querySelector('#firstName');
+let firstNameError = document.querySelector('#firstNameErrorMsg');
 
-    let lastName = document.querySelector('#lastName');
-    let lastNameError = document.querySelector('#lastNameErrorMsg')
+let lastName = document.querySelector('#lastName');
+let lastNameError = document.querySelector('#lastNameErrorMsg');
 
-    let nameRegex = /^[a-zA-Z-\s]+$/;
+let city = document.querySelector('#city');
+let cityError = document.querySelector('#cityErrorMsg');
 
-    if (nameRegex.test(firstName.value) == false) {
-        firstNameError.innerHTML = "Le prenom ne doit contenir que des lettres";
-        submit.preventdefault();
-    } else if (nameRegex.test(lastName.value) == false) {
-        firstNameError.innerHTML = "Le nom ne doit contenir que des lettres";
-        submit.preventdefault();
-    } else if (nameRegex.test(firstName.value) == true) {
-        console.log("c'est ok ")
-        submit.preventdefault();
+let email = document.querySelector('#email');
+let emailError = document.querySelector('#emailErrorMsg');
+
+// Fonctions des différents inputs
+
+function funcFirstName() {
+
+    if (simpleRegex.test(firstName.value) == false) {
+        firstNameError.innerHTML = "Le prénom ne doit contenir que des lettres";
+
+    } else {
+        firstNameError.innerHTML = "";
+        return true;
     }
 }
 
+function funcLastName() {
 
-let submit = document.querySelector('#order');
-submit.addEventListener('submit', form);
+    if (simpleRegex.test(lastName.value) == false) {
+        lastNameError.innerHTML = "Le nom ne doit contenir que des lettres";
+
+    } else {
+        lastNameError.innerHTML = "";
+        return true;
+    }
+}
+
+function funcCity() {
+
+    if (simpleRegex.test(city.value) == false) {
+        cityError.innerHTML = "La ville ne doit contenir que des lettres";
+    } else {
+        cityError.innerHTML = "";
+        return true;
+    }
+
+}
+
+function funcMail() {
+
+    if (email.value == "") {
+        emailError.innerHTML = "";
+    } else if (mailRegex.test(email.value) == false) {
+        emailError.innerHTML = "Le format de l'email n'est pas correct";
+    } else {
+        emailError.innerHTML = "";
+        return true;
+    }
+
+}
+
+// Evenements sur les inputs
+
+firstName.addEventListener('change', funcFirstName);
+lastName.addEventListener('change', funcLastName);
+city.addEventListener('change', funcCity);
+email.addEventListener('change', funcMail);
+
+// Evenement et condition du bouton Order
+
+let order = document.querySelector('#order');
+
+order.addEventListener('click', function(e) {
+
+    let resFirstName = funcFirstName();
+    let resLastName = funcLastName();
+    let resCity = funcCity();
+    let resMail = funcMail();
+
+    if (resFirstName !== true || resLastName !== true || resCity !== true || resMail !== true) {
+        e.preventDefault();
+    }
+})
