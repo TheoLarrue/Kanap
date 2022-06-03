@@ -1,7 +1,7 @@
 // Récupération de l'id du produit
 
-let src = window.location.href;
-let url = new URL(src);
+let src3n = window.location.href;
+let url = new URL(src3n);
 let idProduct = url.searchParams.get("id");
 
 // Constructeur de page

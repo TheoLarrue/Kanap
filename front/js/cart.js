@@ -191,8 +191,8 @@ let cityError = document.querySelector('#cityErrorMsg');
 let email = document.querySelector('#email');
 let emailError = document.querySelector('#emailErrorMsg');
 
-let adress = document.querySelector('#adress');
-let adressError = document.querySelector('#adressErrorMsg');
+let address = document.querySelector('#address');
+let addressError2a = document.querySelector('#addressErrorMsg');
 
 // Validation Prénom
 
@@ -245,7 +245,7 @@ async function cityApi() {
 
 // Validation Ville
 
-async function funcCity() {
+function funcCity() {
 
     if (simpleRegex.test(city.value) == false) {
         cityError.innerHTML = "La ville ne doit contenir que des lettres";
@@ -279,6 +279,47 @@ city.addEventListener('input', funcCity);
 city.addEventListener('input', cityApi);
 email.addEventListener('input', funcMail);
 
+// Post Order
+
+async function postOrder() {
+
+    let arrayId = [];
+
+    for (product of cart) {
+        arrayId.push(product.id);
+    }
+
+    let order = {
+
+        contact: {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            address: address.value,
+            city: city.value,
+            email: email.value
+        },
+
+        products: arrayId
+    }
+
+    let config = {
+        method: 'POST',
+        body: JSON.stringify(order),
+        headers: {
+            'Accept': 'application/json',
+            "Content-Type": "application/json"
+        }
+    }
+
+    let reponse = await fetch("http://localhost:3000/api/products/order", config);
+    let data = await reponse.json();
+
+    localStorage.clear();
+    localStorage.setItem('order', JSON.stringify(data.orderId));
+    document.location.href = "confirmation.html";
+
+}
+
 // Evenement et condition du bouton Order
 
 let order = document.querySelector('#order');
@@ -292,32 +333,7 @@ order.addEventListener('click', function(e) {
 
     if (resFirstName !== true || resLastName !== true || resCity !== true || resMail !== true) {
         e.preventDefault();
+    } else {
+        postOrder();
     }
 })
-
-// Post Order
-
-function postOrder() {
-
-    let arrayId = [];
-
-    for (product of cart) {
-        arrayId.push(product.id);
-    }
-
-    let order = {
-
-        contact: {
-            firstName: firstName.value,
-            lastName: lastName.value,
-            adress: adress.value,
-            city: city.value,
-            email: email.value
-        },
-
-        products: arrayId
-    }
-
-}
-
-postOrder();

@@ -39,10 +39,10 @@ function cardBuilder(product) {
 function errorFunc() {
 
     let titles = document.querySelector('.titles');
-    let h2 = titles.querySelector('h2');
+    let h24a = titles.querySelector('h2');
     let h1 = titles.querySelector('h1');
     h1.textContent = "";
-    h2.textContent = "";
+    h24a.textContent = "";
     let items = document.querySelector(".items");
     const h3Error = document.createElement('h3');
     h3Error.innerHTML = ("Une erreur est survenue");
