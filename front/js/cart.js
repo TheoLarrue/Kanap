@@ -224,17 +224,21 @@ function funcLastName() {
 
 async function cityApi() {
 
-    let apiUrl = `https://geo.api.gouv.fr/communes?nom=${city.value}&fields=nom&format=json&geometry=centre`;
-    let reponseApi = await fetch(apiUrl);
-    let dataApi = await reponseApi.json();
+    try {
+        let apiUrl = `https://geo.api.gouv.fr/communes?nom=${city.value}&fields=nom&format=json&geometry=centre`;
+        let reponseApi = await fetch(apiUrl);
+        let dataApi = await reponseApi.json();
 
 
-    dataList.innerHTML = "";
+        dataList.innerHTML = "";
 
-    for (data of dataApi) {
-        let option = document.createElement('option');
-        dataList.append(option);
-        option.value = data.nom;
+        for (data of dataApi) {
+            let option = document.createElement('option');
+            dataList.append(option);
+            option.value = data.nom;
+        }
+    } catch {
+        console.log("GeoApi ne répond pas");
     }
 
 }
