@@ -194,7 +194,7 @@ let emailError = document.querySelector('#emailErrorMsg');
 let adress = document.querySelector('#adress');
 let adressError = document.querySelector('#adressErrorMsg');
 
-// Fonctions des différents inputs
+// Validation Prénom
 
 function funcFirstName() {
 
@@ -207,6 +207,8 @@ function funcFirstName() {
     }
 }
 
+// Validation Nom
+
 function funcLastName() {
 
     if (simpleRegex.test(lastName.value) == false) {
@@ -218,7 +220,28 @@ function funcLastName() {
     }
 }
 
-function funcCity() {
+// Suggestion Ville via Api GeoApi
+
+async function cityApi() {
+
+    let apiUrl = `https://geo.api.gouv.fr/communes?nom=${city.value}&fields=nom&format=json&geometry=centre`;
+    let reponseApi = await fetch(apiUrl);
+    let dataApi = await reponseApi.json();
+
+
+    dataList.innerHTML = "";
+
+    for (data of dataApi) {
+        let option = document.createElement('option');
+        dataList.append(option);
+        option.value = data.nom;
+    }
+
+}
+
+// Validation Ville
+
+async function funcCity() {
 
     if (simpleRegex.test(city.value) == false) {
         cityError.innerHTML = "La ville ne doit contenir que des lettres";
@@ -228,6 +251,8 @@ function funcCity() {
     }
 
 }
+
+// Validation Mail
 
 function funcMail() {
 
@@ -244,10 +269,11 @@ function funcMail() {
 
 // Evenements sur les inputs
 
-firstName.addEventListener('change', funcFirstName);
-lastName.addEventListener('change', funcLastName);
-city.addEventListener('change', funcCity);
-email.addEventListener('change', funcMail);
+firstName.addEventListener('input', funcFirstName);
+lastName.addEventListener('input', funcLastName);
+city.addEventListener('input', funcCity);
+city.addEventListener('input', cityApi);
+email.addEventListener('input', funcMail);
 
 // Evenement et condition du bouton Order
 
