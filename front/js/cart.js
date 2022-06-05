@@ -177,6 +177,7 @@ run();
 // Inputs et Regex
 
 let simpleRegex = /^[a-zA-Z-\s ]*$/;
+let codePostalRegex = /[0-9]{5}$/;
 let mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,3}))$/;
 
 let firstName = document.querySelector('#firstName');
@@ -184,6 +185,9 @@ let firstNameError = document.querySelector('#firstNameErrorMsg');
 
 let lastName = document.querySelector('#lastName');
 let lastNameError = document.querySelector('#lastNameErrorMsg');
+
+let codePostal = document.querySelector('#codePostal');
+let codePostalError = document.querySelector('#codePostalErrorMsg');
 
 let city = document.querySelector('#city');
 let cityError = document.querySelector('#cityErrorMsg');
@@ -198,8 +202,8 @@ let addressError2a = document.querySelector('#addressErrorMsg');
 
 function funcFirstName() {
 
-    if (simpleRegex.test(firstName.value) == false) {
-        firstNameError.innerHTML = "Le prénom ne doit contenir que des lettres";
+    if (simpleRegex.test(firstName.value) == false || firstName.value == "") {
+        firstNameError.innerHTML = "Le prénom doit être valide";
 
     } else {
         firstNameError.innerHTML = "";
@@ -211,11 +215,37 @@ function funcFirstName() {
 
 function funcLastName() {
 
-    if (simpleRegex.test(lastName.value) == false) {
-        lastNameError.innerHTML = "Le nom ne doit contenir que des lettres";
+    if (simpleRegex.test(lastName.value) == false || lastName.value == "") {
+        lastNameError.innerHTML = "Le nom doit être valide";
 
     } else {
         lastNameError.innerHTML = "";
+        return true;
+    }
+}
+
+// Validation Adresse 
+
+function funcAddress() {
+
+    if (address.value == "") {
+        addressError2a.innerHTML = "L'adresse doit être valide";
+
+    } else {
+        addressError2a.innerHTML = "";
+        return true;
+    }
+}
+
+// Validation Code Postal
+
+function funcCodePostal() {
+
+    if (codePostalRegex.test(codePostal.value) == false || codePostal.value == "") {
+        codePostalError.innerHTML = "Le code postal doit être valide";
+
+    } else {
+        codePostalError.innerHTML = "";
         return true;
     }
 }
@@ -225,33 +255,20 @@ function funcLastName() {
 async function cityApi() {
 
     try {
-        let apiUrl = `https://geo.api.gouv.fr/communes?nom=${city.value}&fields=nom&format=json&geometry=centre`;
+        let apiUrl = `https://geo.api.gouv.fr/communes?codePostal=${codePostal.value}&fields=nom&format=json&geometry=centre`;
         let reponseApi = await fetch(apiUrl);
         let dataApi = await reponseApi.json();
 
-
-        dataList.innerHTML = "";
+        city.innerHTML = "";
 
         for (data of dataApi) {
             let option = document.createElement('option');
-            dataList.append(option);
+            city.append(option);
             option.value = data.nom;
+            option.innerHTML = data.nom;
         }
     } catch {
         console.log("GeoApi ne répond pas");
-    }
-
-}
-
-// Validation Ville
-
-function funcCity() {
-
-    if (simpleRegex.test(city.value) == false) {
-        cityError.innerHTML = "La ville ne doit contenir que des lettres";
-    } else {
-        cityError.innerHTML = "";
-        return true;
     }
 
 }
@@ -260,10 +277,8 @@ function funcCity() {
 
 function funcMail() {
 
-    if (email.value == "") {
-        emailError.innerHTML = "";
-    } else if (mailRegex.test(email.value) == false) {
-        emailError.innerHTML = "Le format de l'email n'est pas correct";
+    if (mailRegex.test(email.value) == false || email.value == "") {
+        emailError.innerHTML = "L'email doit être valide";
     } else {
         emailError.innerHTML = "";
         return true;
@@ -271,13 +286,43 @@ function funcMail() {
 
 }
 
+// Fonction Focus Event
+
+function focus() {
+    let orderBtn = document.querySelector('#order');
+    orderBtn.disabled = true;
+}
+
+// Fonction Blur Event
+
+function blur() {
+    let orderBtn = document.querySelector('#order');
+    orderBtn.disabled = false;
+}
+
 // Evenements sur les inputs
 
 firstName.addEventListener('input', funcFirstName);
 lastName.addEventListener('input', funcLastName);
-city.addEventListener('input', funcCity);
-city.addEventListener('input', cityApi);
+address.addEventListener('input', funcAddress)
+codePostal.addEventListener('input', funcCodePostal);
+codePostal.addEventListener('input', cityApi);
 email.addEventListener('input', funcMail);
+
+firstName.addEventListener('focus', focus);
+lastName.addEventListener('focus', focus);
+address.addEventListener('focus', focus);
+codePostal.addEventListener('focus', focus);
+city.addEventListener('focus', focus);
+email.addEventListener('focus', focus);
+
+firstName.addEventListener('blur', blur);
+lastName.addEventListener('blur', blur);
+address.addEventListener('blur', blur);
+codePostal.addEventListener('blur', blur);
+city.addEventListener('blur', blur);
+email.addEventListener('blur', blur);
+
 
 // Post Order
 
@@ -295,32 +340,36 @@ async function postOrder() {
             firstName: firstName.value,
             lastName: lastName.value,
             address: address.value,
-            city: city.value,
+            city: city.options[city.selectedIndex].text,
             email: email.value
         },
-
         products: arrayId
     }
 
     let config = {
         method: 'POST',
-        body: JSON.stringify(order),
         headers: {
             'Accept': 'application/json',
             "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify(order)
     }
 
-    let reponse = await fetch("http://localhost:3000/api/products/order", config);
-    let data = await reponse.json();
+    try {
+        let reponse = await fetch("http://localhost:3000/api/products/order", config);
+        let data = await reponse.json();
+        localStorage.clear();
+        localStorage.setItem('order', JSON.stringify(data.orderId));
+        document.location.href = "confirmation.html";
 
-    localStorage.clear();
-    localStorage.setItem('order', JSON.stringify(data.orderId));
-    document.location.href = "confirmation.html";
+    } catch {
+        console.log(config.body);
+        alert('erreur');
+    }
 
 }
 
-// Evenement et condition du bouton Order
+// Evenement et conditions du bouton Order
 
 let order = document.querySelector('#order');
 
@@ -328,10 +377,11 @@ order.addEventListener('click', function(e) {
 
     let resFirstName = funcFirstName();
     let resLastName = funcLastName();
-    let resCity = funcCity();
+    let resAddress = funcAddress();
+    let resCodePostal = funcCodePostal();
     let resMail = funcMail();
 
-    if (resFirstName !== true || resLastName !== true || resCity !== true || resMail !== true) {
+    if (resFirstName !== true || resLastName !== true || resAddress !== true || resCodePostal !== true || resMail !== true) {
         e.preventDefault();
     } else {
         postOrder();

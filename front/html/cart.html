@@ -80,30 +80,35 @@
                         <form method="get" class="cart__order__form">
                             <div class="cart__order__form__question">
                                 <label for="firstName">Prénom: </label>
-                                <input type="text" name="firstName" id="firstName" required>
+                                <input type="text" name="firstName" id="firstName" autocomplete="off" required>
                                 <p id="firstNameErrorMsg">
                                     <!-- ci est un message d'erreur -->
                                 </p>
                             </div>
                             <div class="cart__order__form__question">
                                 <label for="lastName">Nom: </label>
-                                <input type="text" name="lastName" id="lastName" required>
+                                <input type="text" name="lastName" id="lastName" autocomplete="off" required>
                                 <p id="lastNameErrorMsg"></p>
                             </div>
                             <div class="cart__order__form__question">
                                 <label for="address">Adresse: </label>
-                                <input type="text" name="address" id="address" required>
+                                <input type="text" name="address" id="address" autocomplete="off" required>
                                 <p id="addressErrorMsg"></p>
                             </div>
                             <div class="cart__order__form__question">
+                                <label for="codePostal">Code Postal </label>
+                                <input type="text" name="codePostal" id="codePostal" autocomplete="off" required>
+                                <p id="codePostalErrorMsg"></p>
+                            </div>
+                            <div class="cart__order__form__question">
                                 <label for="city">Ville: </label>
-                                <input type="text" name="city" id="city" list="dataList" required>
-                                <datalist id="dataList"></datalist>
+                                <select name="city" id="city" required>
+                                </select>
                                 <p id="cityErrorMsg"></p>
                             </div>
                             <div class="cart__order__form__question">
                                 <label for="email">Email: </label>
-                                <input type="email" name="email" id="email" required>
+                                <input type="email" name="email" id="email" autocomplete="off" required>
                                 <p id="emailErrorMsg"></p>
                             </div>
                             <div class="cart__order__form__submit">
