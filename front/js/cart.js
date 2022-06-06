@@ -261,11 +261,11 @@ async function cityApi() {
 
         city.innerHTML = "";
 
-        for (data of dataApi) {
+        for (cp of dataApi) {
             let option = document.createElement('option');
             city.append(option);
-            option.value = data.nom;
-            option.innerHTML = data.nom;
+            option.value = cp.nom;
+            option.innerHTML = cp.nom;
         }
     } catch {
         console.log("GeoApi ne répond pas");
@@ -286,20 +286,6 @@ function funcMail() {
 
 }
 
-// Fonction Focus Event
-
-function focus() {
-    let orderBtn = document.querySelector('#order');
-    orderBtn.disabled = true;
-}
-
-// Fonction Blur Event
-
-function blur() {
-    let orderBtn = document.querySelector('#order');
-    orderBtn.disabled = false;
-}
-
 // Evenements sur les inputs
 
 firstName.addEventListener('input', funcFirstName);
@@ -308,21 +294,6 @@ address.addEventListener('input', funcAddress)
 codePostal.addEventListener('input', funcCodePostal);
 codePostal.addEventListener('input', cityApi);
 email.addEventListener('input', funcMail);
-
-firstName.addEventListener('focus', focus);
-lastName.addEventListener('focus', focus);
-address.addEventListener('focus', focus);
-codePostal.addEventListener('focus', focus);
-city.addEventListener('focus', focus);
-email.addEventListener('focus', focus);
-
-firstName.addEventListener('blur', blur);
-lastName.addEventListener('blur', blur);
-address.addEventListener('blur', blur);
-codePostal.addEventListener('blur', blur);
-city.addEventListener('blur', blur);
-email.addEventListener('blur', blur);
-
 
 // Post Order
 
@@ -340,31 +311,25 @@ async function postOrder() {
             firstName: firstName.value,
             lastName: lastName.value,
             address: address.value,
-            city: city.options[city.selectedIndex].text,
+            city: city.value,
             email: email.value
         },
-        products: arrayId
-    }
-
-    let config = {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(order)
+        products: arrayId,
     }
 
     try {
-        let reponse = await fetch("http://localhost:3000/api/products/order", config);
+        let reponse = await fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            body: await JSON.stringify(order),
+            headers: { "Content-Type": "application/json" }
+        });
         let data = await reponse.json();
         localStorage.clear();
         localStorage.setItem('order', JSON.stringify(data.orderId));
-        document.location.href = "confirmation.html";
+        window.location.href = "confirmation.html";
 
     } catch {
-        console.log(config.body);
-        alert('erreur');
+        console.log('Une erreur est survenue');
     }
 
 }
@@ -384,6 +349,7 @@ order.addEventListener('click', function(e) {
     if (resFirstName !== true || resLastName !== true || resAddress !== true || resCodePostal !== true || resMail !== true) {
         e.preventDefault();
     } else {
+        e.preventDefault();
         postOrder();
     }
 })
