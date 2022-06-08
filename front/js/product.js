@@ -66,15 +66,11 @@ async function getApiProduct() {
         productBuilder(productData);
 
     } catch (error) {
-
         errorFuncProduct();
-
     }
 }
 
-
 getApiProduct();
-
 
 // Sauvegarde du panier
 
@@ -93,7 +89,6 @@ function getCart() {
     }
 }
 
-
 // Ajout au panier
 
 function addToCart(product) {
@@ -103,8 +98,6 @@ function addToCart(product) {
     let selectQuantity = document.querySelector('#quantity');
     let valueQuantity = selectQuantity.value;
     let title = document.querySelector('#title').textContent;
-
-
 
     if (valueColor == "") {
         alert("Merci de choisir une couleur");

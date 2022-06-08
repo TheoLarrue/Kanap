@@ -71,8 +71,6 @@ function remove() {
         let id = article.dataset.id;
         let name = article.querySelector('h2').textContent;
 
-
-
         deleteItem.addEventListener('click', () => {
 
             let check = cart.find(p => p.id == id && p.color == color)
