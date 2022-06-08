@@ -109,7 +109,7 @@ function addToCart(product) {
     if (valueColor == "") {
         alert("Merci de choisir une couleur");
     } else if (valueQuantity < 1 || valueQuantity > 100) {
-        alert("Merci de choisir une quantité")
+        alert("Merci de choisir une quantité valide")
     } else {
         let product = {
             id: idProduct,
@@ -119,16 +119,25 @@ function addToCart(product) {
 
         let cart = getCart();
 
-        let productCheck = cart.find(p => p.id == product.id && p.color == product.color)
+        let productCheck = cart.find(p => p.id == product.id && p.color == product.color);
+
         if (productCheck !== undefined) {
-            productCheck.quantity = parseInt(productCheck.quantity) + parseInt(valueQuantity);
+
+            if ((parseInt(productCheck.quantity) + parseInt(valueQuantity)) <= 100) {
+                productCheck.quantity = parseInt(productCheck.quantity) + parseInt(valueQuantity);
+                if (window.confirm(`Voulez vous ajouter ${valueQuantity} ${title} à votre panier ?`)) {
+                    saveCart(cart);
+                }
+            } else {
+                alert('La quantité ne peut pas être supérieure à 100');
+            }
+
         } else {
             cart.push(product);
+            if (window.confirm(`Voulez vous ajouter ${valueQuantity} ${title} à votre panier ?`)) {
+                saveCart(cart);
+            }
         }
-        if (window.confirm(`Voulez vous ajouter ${valueQuantity} ${title} à votre panier ?`)) {
-            saveCart(cart);
-        }
-
     }
 }
 

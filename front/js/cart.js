@@ -100,9 +100,14 @@ function quantity() {
 
             let check = cart.find(p => p.id == id && p.color == color);
             if (check !== undefined) {
-                check.quantity = input.value;
-                saveCart(cart);
-                displayTotal();
+                if (input.value <= 100) {
+                    check.quantity = input.value;
+                    saveCart(cart);
+                    displayTotal();
+                } else {
+                    alert('La quantité ne peut pas être supérieure à 100');
+                    input.value = check.quantity;
+                }
             }
         })
     }
